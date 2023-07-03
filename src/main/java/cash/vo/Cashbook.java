@@ -4,6 +4,7 @@ public class Cashbook {
 	private int cashbookNo;
 	private String category;
 	private String cashbookDate;
+	private String memberId;
 	private int price;
 	private String memo;
 	private String updatedate;
@@ -13,11 +14,12 @@ public class Cashbook {
 		super();
 	}
 	
-	public Cashbook(int cashbookNo, String category, String cashbookDate, int price, String memo, String updatedate,String createdate) {
+	public Cashbook(int cashbookNo, String category, String cashbookDate, int price, String memo, String updatedate,String createdate, String memberId) {
 		this.cashbookNo = cashbookNo;
 		this.category = category;
 		this.cashbookDate = cashbookDate;
 		this.price = price;
+		this.memberId = memberId;
 		this.memo = memo;
 		this.updatedate = updatedate;
 		this.createdate = createdate;
@@ -65,11 +67,19 @@ public class Cashbook {
 	public void setCreatedate(String createdate) {
 		this.createdate = createdate;
 	}
+	public String getMemberId() {
+		return memberId;
+	}
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
 
 	@Override
 	public String toString() {
 		return "Cashbook [cashbookNo=" + cashbookNo + ", category=" + category + ", cashbookDate=" + cashbookDate
-				+ ", price=" + price + ", memo=" + memo + ", updatedate=" + updatedate + ", createdate=" + createdate
-				+ "]";
+				+ ", memberId=" + memberId + ", price=" + price + ", memo=" + memo + ", updatedate=" + updatedate
+				+ ", createdate=" + createdate + "]";
 	}
+
+	
 }
