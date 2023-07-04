@@ -26,42 +26,46 @@
    
    <!-- 자바코드(제어문) : JSTL 사용 -->
       
-   <h1>${targetYear}년 ${targetMonth+1}월</h1>
-   <a href="${pageContext.request.contextPath}/calendar?targetYear=${targetYear}&targetMonth=${targetMonth-1}">이전</a>
-   <a href="${pageContext.request.contextPath}/calendar?targetYear=${targetYear}&targetMonth=${targetMonth+1}">다음</a>
-   
-   <table class="table table-striped"border="1">
-      <tr>
-         <c:forEach var="i" begin="0" end="${totalCell - 1}" step="1">
-            <c:set var="d" value="${i-beginBlank+1}"></c:set>
-            
-            <c:if test="${i!=0 && i%7==0}">
-               </tr><tr>
-            </c:if>
-            
-            <c:if test="${d < 1 || d > lastDate}">
-               <td></td>
-            </c:if>
-            
-            <c:if test="${!(d < 1 || d > lastDate)}">
-               <td>
-                  <div><a href="${pageContext.request.contextPath}/calendarOne?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDate=${d}">${d}</a></div>
-                  <c:forEach var="c" items="${list}">
-                     <c:if test="${d == fn:substring(c.cashbookDate,8,10)}">
-                        <div>
-                           <c:if test="${c.category == '수입'}">
-                              <span>+${c.price}</span>
-                           </c:if>
-                           <c:if test="${c.category == '지출'}">
-                              <span style="color:red;">-${c.price}</span>
-                           </c:if>
-                        </div>
-                     </c:if>
-                  </c:forEach>
-               </td>
-            </c:if>
-         </c:forEach>
-   </table>
+	<h1>${targetYear}년 ${targetMonth+1}월</h1>
+	<a href="${pageContext.request.contextPath}/calendar?targetYear=${targetYear}&targetMonth=${targetMonth-1}">이전</a>
+	<a href="${pageContext.request.contextPath}/calendar?targetYear=${targetYear}&targetMonth=${targetMonth+1}">다음</a>
+	<div>
+		<h2>이달의 해시태그</h2>
+		<div>
+			<c:forEach var="m" items="${htList}">
+				<a href="${pageContext.request.contextPath}/hashtagList?word=${m.word}&targetYear=${targetYear}&targetMonth=${targetMonth}">${m.word}(${m.cnt})</a>
+			</c:forEach>
+		</div>
+	</div>
+	<table class="table table-striped"border="1">
+		<tr>
+		<c:forEach var="i" begin="0" end="${totalCell - 1}" step="1">
+			<c:set var="d" value="${i-beginBlank+1}"></c:set>
+			<c:if test="${(i!=0) && ((i%7)==0)}">
+				</tr><tr>
+			</c:if>
+			<c:if test="${d < 1 || d > lastDate}">
+				<td></td>
+			</c:if>
+			<c:if test="${!(d < 1 || d > lastDate)}">
+				<td>
+					<div><a href="${pageContext.request.contextPath}/calendarOne?targetYear=${targetYear}&targetMonth=${targetMonth}&targetDate=${d}">${d}</a></div>
+					<c:forEach var="c" items="${list}">
+						<c:if test="${d == fn:substring(c.cashbookDate,8,10)}">
+						<div>
+							<c:if test="${c.category == '수입'}">
+								<span>+${c.price}</span>
+							</c:if>
+							<c:if test="${c.category == '지출'}">
+								<span style="color:red;">-${c.price}</span>
+							</c:if>
+						</div>
+						</c:if>
+					</c:forEach>
+				</td>
+			</c:if>
+		</c:forEach>
+	</table>
 </div>
 </body>
 </html>

@@ -10,6 +10,49 @@ import cash.vo.Cashbook;
 import cash.vo.Member;
 
 public class CashbookDao {
+	
+	// 반환 값 : cashbook_no 키값
+	public int insertCashbook(Cashbook cashbook) {
+		int cashbookNo = 0;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			String driver = "org.mariadb.jdbc.Driver";
+			String dburl = "jdbc:mariadb://127.0.0.1:3306/cash";
+			String dbuser = "root";
+			String dbpw = "java1234";
+			Class.forName(driver);
+			conn = DriverManager.getConnection(dburl,dbuser,dbpw);
+			String sql = "INSERT INTO cashbook(member_id, category, cashbook_date,price,memo,updatedate,createdate)"
+					+ " VALUES(?,?,?,?,?,now(),now())";
+			stmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1,cashbook.getMemberId());
+			stmt.setString(2,cashbook.getCategory());
+			stmt.setString(3,cashbook.getCashbookDate());
+			stmt.setInt(4,cashbook.getPrice());
+			stmt.setString(5,cashbook.getMemo());
+			int row = stmt.executeUpdate();
+			rs = stmt.getGeneratedKeys();
+			if(rs.next()) {
+				cashbookNo = rs.getInt(1);
+				System.out.println(cashbookNo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+				stmt.close();
+				conn.close();
+			} catch(Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		return cashbookNo;
+	}
+	// 월별 금액
 	public List<Cashbook> selectCashbookListByMonth(String memberId, int targetYear, int targetMonth) {
 		List<Cashbook> list = new ArrayList<Cashbook>();
 		

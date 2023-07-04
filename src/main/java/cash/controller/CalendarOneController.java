@@ -32,6 +32,10 @@ public class CalendarOneController extends HttpServlet {
 		int targetMonth = Integer.parseInt(request.getParameter("targetMonth"));
 		int targetDate = Integer.parseInt(request.getParameter("targetDate"));
 		
+		request.setAttribute("targetYear",targetYear);
+		request.setAttribute("targetMonth",targetMonth);
+		request.setAttribute("targetDate",targetDate);
+	
 		List<Cashbook> list = new CashbookDao().selectCashbookListByDate(memberId, targetYear, targetMonth+1,targetDate);
 		
 		request.setAttribute("list", list);

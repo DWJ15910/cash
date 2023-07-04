@@ -19,10 +19,10 @@ public class Cashbook {
 		this.category = category;
 		this.cashbookDate = cashbookDate;
 		this.price = price;
-		this.memberId = memberId;
 		this.memo = memo;
 		this.updatedate = updatedate;
 		this.createdate = createdate;
+		this.memberId = memberId;
 	}
 
 	public int getCashbookNo() {
