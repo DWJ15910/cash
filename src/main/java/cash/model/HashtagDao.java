@@ -13,8 +13,53 @@ import java.util.Map;
 import cash.vo.Hashtag;
 
 public class HashtagDao {
+	// 이달의 해쉬태그 리스트 총 갯수
+	public int selectWordByCountHashtagList(String memberId, String word, int targetYear, int targetMonth) {
+		int row = 0;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			String driver = "org.mariadb.jdbc.Driver";
+			String dburl = "jdbc:mariadb://127.0.0.1:3306/cash";
+			String dbuser = "root";
+			String dbpw = "java1234";
+			Class.forName(driver);
+			conn = DriverManager.getConnection(dburl,dbuser,dbpw);
+			String sql = "SELECT count(*)"
+					+ " FROM hashtag h INNER JOIN cashbook c ON h.cashbook_no=c.cashbook_no\r\n"
+					+ " WHERE h.word = ?\r\n"
+					+ " AND YEAR(c.cashbook_date)=?\r\n"
+					+ " AND MONTH(c.cashbook_date)=?\r\n"
+					+ " AND c.member_id = ?\r\n"
+					+ " ORDER BY c.cashbook_date DESC";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, word);
+			stmt.setInt(2, targetYear);
+			stmt.setInt(3, targetMonth);
+			stmt.setString(4, memberId);
+			rs = stmt.executeQuery();
+			if(rs.next()) {
+				row = rs.getInt(1);
+			}
+			System.out.println(stmt + "stmt");
+			System.out.println(rs + "<--rs");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+				stmt.close();
+				conn.close();
+			} catch(Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return row;
+	}
 	// 이달의 해쉬태그 리스트
-	public List<Map<String,Object>> selectWordByCount(String memberId, String word, int targetYear, int targetMonth){
+	public List<Map<String,Object>> selectWordByCount(String memberId, String word, int targetYear, int targetMonth,int beginRow, int rowPerPage){
 		List<Map<String,Object>> list = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -28,17 +73,20 @@ public class HashtagDao {
 			Class.forName(driver);
 			conn = DriverManager.getConnection(dburl,dbuser,dbpw);
 			String sql = "SELECT c.cashbook_date,c.category, c.price,c.memo,h.word\r\n"
-					+ "FROM hashtag h INNER JOIN cashbook c ON h.cashbook_no=c.cashbook_no\r\n"
-					+ "WHERE h.word = ?\r\n"
-					+ "AND YEAR(c.cashbook_date)=?\r\n"
-					+ "AND MONTH(c.cashbook_date)=?\r\n"
-					+ "AND c.member_id = ?\r\n"
-					+ "ORDER BY c.cashbook_date DESC;";
+					+ " FROM hashtag h INNER JOIN cashbook c ON h.cashbook_no=c.cashbook_no\r\n"
+					+ " WHERE h.word = ?\r\n"
+					+ " AND YEAR(c.cashbook_date)=?\r\n"
+					+ " AND MONTH(c.cashbook_date)=?\r\n"
+					+ " AND c.member_id = ?\r\n"
+					+ " ORDER BY c.cashbook_date DESC"
+					+ " LIMIT ?,?;";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, word);
 			stmt.setInt(2, targetYear);
 			stmt.setInt(3, targetMonth);
 			stmt.setString(4, memberId);
+			stmt.setInt(5, beginRow);
+			stmt.setInt(6, rowPerPage);
 			rs = stmt.executeQuery();
 			while(rs.next()) {
 				Map<String,Object> m = new HashMap<String,Object>();
